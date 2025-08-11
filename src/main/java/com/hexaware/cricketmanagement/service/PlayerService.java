@@ -1,13 +1,17 @@
 package com.hexaware.cricketmanagement.service;
 
-import com.hexaware.cricketmanagement.dto.PlayerDto;
 import java.util.List;
+
+import com.hexaware.cricketmanagement.dto.PlayerDto;
+import com.hexaware.cricketmanagement.entity.Player;
 
 public interface PlayerService {
 
-    List<PlayerDto> getAllPlayers();
-    PlayerDto getPlayerById(Long id);
-    PlayerDto createPlayer(PlayerDto playerDto);
-    PlayerDto updatePlayer(Long id, PlayerDto playerDto);
-    void deletePlayer(Long id);
+    List<Player> getAllPlayers();
+    Player createPlayer(PlayerDto dto);
+    Player getPlayerById(int id);
+    Player updatePlayer(int id, PlayerDto dto);
+    String deleteById(int id);
+    List<Player> getPlayersByTeam(String teamName);
+    List<Player> getByTotalMatchesGreaterThan(int totalMatches);
 }

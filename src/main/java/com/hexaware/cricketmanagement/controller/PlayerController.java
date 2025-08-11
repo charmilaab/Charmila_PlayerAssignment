@@ -1,55 +1,55 @@
 package com.hexaware.cricketmanagement.controller;
 
-import com.hexaware.cricketmanagement.dto.PlayerDto;
-import com.hexaware.cricketmanagement.service.PlayerService;
-import com.hexaware.cricketmanagement.exception.PlayerNotFoundException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.hexaware.cricketmanagement.dto.PlayerDto;
+import com.hexaware.cricketmanagement.entity.Player;
+import com.hexaware.cricketmanagement.service.PlayerService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/players")
 public class PlayerController {
 
     @Autowired
-    private PlayerService playerService;
+    private PlayerService service;
+
+    @PostMapping("/add")
+    public Player createPlayer(@Valid @RequestBody PlayerDto dto) {
+        return service.createPlayer(dto);
+    }
+
+    @PutMapping("/{id}")
+    public Player updatePlayer(@PathVariable int id, @Valid @RequestBody PlayerDto dto) {
+        return service.updatePlayer(id, dto);
+    }
+
+    @GetMapping("/{id}")
+    public Player getPlayerById(@PathVariable int id) {
+        return service.getPlayerById(id);
+    }
 
     @GetMapping("/getall")
-    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
-        return ResponseEntity.ok(playerService.getAllPlayers());
+    public List<Player> getAllPlayers() {
+        return service.getAllPlayers();
     }
 
-    @GetMapping("/{playerId}")
-    public ResponseEntity<PlayerDto> getPlayerById(@PathVariable Long playerId) {
-        PlayerDto playerDto = playerService.getPlayerById(playerId);
-        return ResponseEntity.ok(playerDto);
+    @DeleteMapping("/delete/{id}")
+    public String deleteById(@PathVariable int id) {
+        return service.deleteById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<PlayerDto> createPlayer(@RequestBody PlayerDto playerDto) {
-        PlayerDto createdPlayer = playerService.createPlayer(playerDto);
-        return new ResponseEntity<>(createdPlayer, HttpStatus.CREATED);
+    @GetMapping("/team/{teamName}")
+    public List<Player> getPlayersByTeam(@PathVariable String teamName) {
+        return service.getPlayersByTeam(teamName);
     }
 
-    @PutMapping("/{playerId}")
-    public ResponseEntity<PlayerDto> updatePlayer(@PathVariable Long playerId, @RequestBody PlayerDto playerDto) {
-        PlayerDto updatedPlayer = playerService.updatePlayer(playerId, playerDto);
-        return ResponseEntity.ok(updatedPlayer);
-    }
-
-    @DeleteMapping("/{playerId}")
-    public ResponseEntity<Void> deletePlayer(@PathVariable Long playerId) {
-        playerService.deletePlayer(playerId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Exception Handler
-    @ExceptionHandler(PlayerNotFoundException.class)
-    public ResponseEntity<String> handlePlayerNotFoundException(PlayerNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    @GetMapping("/totalMatches/{totalMatches}")
+    public List<Player> getByTotalMatchesGreaterThan(@PathVariable int totalMatches) {
+        return service.getByTotalMatchesGreaterThan(totalMatches);
     }
 }
